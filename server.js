@@ -25,11 +25,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // --- CORS Ayarları ---
-app.use(cors({
-origin: ['http://localhost:5000', 'http://localhost:8000', 'http://localhost:8080', 'null'], // BURAYI GÜNCELLEDİK
-methods: ['POST', 'GET', 'PUT', 'DELETE'],
-credentials: true
-}));
+app.use(cors()); // Tüm gelen isteklere izin ver (CORS sorununu hızlıca çözer)
 
 // Express uygulamasına JSON ve URL-encoded gövdelerini parse etmesi için middleware ekle
 app.use(express.json());
