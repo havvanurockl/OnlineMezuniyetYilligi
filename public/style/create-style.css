@@ -1,0 +1,357 @@
+/* style/create-style.css */
+
+/* Genel Kapsayıcı */
+.main-container {
+    max-width: 800px; /* Genişliği biraz artırıldı */
+    margin: 60px auto; /* Yukarıdan boşluk ve ortalama */
+    padding: 20px;
+}
+
+/* Bölüm Kartları */
+.section-card {
+    background-color: rgba(255, 255, 255, 0.95); /* Hafif şeffaf beyaz */
+    padding: 30px 40px;
+    border-radius: 15px; /* Yuvarlak köşeler */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Belirgin gölge */
+    margin-bottom: 30px; /* Bölümler arası boşluk */
+    backdrop-filter: blur(5px); /* Arka planı hafif bulanıklaştır */
+    animation: fadeIn 0.8s ease-out; /* Sayfa yüklendiğinde hafif geçiş */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Bölüm Başlıkları */
+.section-title {
+    color: #004aad; /* Ana renk */
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* İkon ile metin arası boşluk */
+    border-bottom: 2px solid rgba(0, 74, 173, 0.2);
+    padding-bottom: 15px;
+}
+
+/* Form Grupları */
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.05rem;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"], /* Dosya input'ları için de stil */
+.form-group textarea,
+.form-group select {
+    width: calc(100% - 20px); /* Padding için ayarlama */
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Hafif yuvarlak inputlar */
+    font-size: 1rem;
+    color: #555;
+    transition: all 0.3s ease; /* Odaklanma geçişi */
+    box-sizing: border-box; /* Padding ve border genişliğe dahil */
+    background-color: #f8f8f8; /* Hafif arka plan rengi */
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #004aad; /* Odakta ana renk */
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2); /* Odakta hafif gölge */
+    outline: none; /* Varsayılan odak çerçevesini kaldır */
+}
+
+/* Select kutusu */
+.form-group select {
+    appearance: none; /* Varsayılan oku kaldır */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23004aad" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Özel ok ikonu */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px; /* Ok için yer bırak */
+}
+
+/* Dosya Yükleme Alanı */
+.file-upload-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #004aad;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px; /* Dosya adı ile boşluk */
+}
+
+.file-upload-label:hover {
+    background-color: #003a8a;
+}
+
+.file-upload-group input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0; /* Gizle */
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 1; /* Label'ın üstünde olmalı */
+}
+
+.file-name {
+    font-size: 0.95rem;
+    color: #777;
+    margin-left: 5px; /* Label ile dosya adı arasında boşluk */
+}
+
+
+/* Butonlar */
+.create-form button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.primary-button {
+    background-color: #004aad; /* Ana renk */
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: #003a8a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 74, 173, 0.3);
+}
+
+.secondary-button { /* Yıllık Listesini Göster butonu için */
+    background-color: #6c757d; /* Gri ton */
+    color: white;
+    margin-top: 20px;
+}
+
+.secondary-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+/* Bölüm Ayırıcı */
+.section-divider {
+    border: none;
+    border-top: 1px dashed rgba(0, 74, 173, 0.3);
+    margin: 40px 0;
+}
+
+/* PDF İndirme ve Paylaşım Butonları (actionButtons) */
+.action-card {
+    text-align: center; /* İçindeki öğeleri ortala */
+}
+
+.download-link {
+    display: inline-flex; /* İkon ve metni yanyana hizala */
+    align-items: center;
+    gap: 8px;
+    background-color: #28a745; /* Yeşil renk */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.download-link:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.share-buttons {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alta geçsin */
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.share-buttons p {
+    width: 100%; /* Metnin tamamını kaplaması için */
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 600;
+}
+
+.share-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-button {
+    background-color: #25d366; /* WhatsApp yeşili */
+    color: white;
+}
+.whatsapp-button:hover {
+    background-color: #1da851;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+}
+
+.email-button {
+    background-color: #e0e0e0; /* Gri ton */
+    color: #333;
+}
+.email-button:hover {
+    background-color: #c0c0c0;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(224, 224, 224, 0.3);
+}
+
+.copy-button {
+    background-color: #007bff; /* Mavi ton */
+    color: white;
+}
+.copy-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Toast Mesajı Stilleri (profile-style.css'den kopyalanabilir) */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.toast.success {
+    background-color: #28a745; /* Yeşil */
+}
+
+.toast.error {
+    background-color: #dc3545; /* Kırmızı */
+}
+
+/* Geri Dön Butonu (profile-style.css'den kopyalanabilir) */
+.back-button {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background-color: rgba(0, 74, 173, 0.8); /* Koyu mavi, hafif şeffaf */
+    color: white;
+    padding: 12px 18px;
+    border-radius: 50%; /* Yuvarlak buton */
+    font-size: 1.5rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.back-button:hover {
+    background-color: #003a8a;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobil uyumluluk için temel ayarlamalar */
+@media (max-width: 768px) {
+    .main-container {
+        margin: 40px 15px;
+        padding: 15px;
+    }
+    .section-card {
+        padding: 20px 25px;
+    }
+    .section-title {
+        font-size: 1.6rem;
+        gap: 8px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select,
+    .create-form button,
+    .share-button,
+    .download-link {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    .file-upload-label {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .share-buttons {
+        flex-direction: column; /* Mobil'de alt alta */
+        gap: 10px;
+    }
+    .share-buttons p {
+        font-size: 1rem;
+    }
+    .back-button {
+        top: 15px;
+        left: 15px;
+        padding: 10px 15px;
+        font-size: 1.2rem;
+    }
+}

@@ -1,0 +1,637 @@
+/* style/yearbooklist-style.css */
+
+/* --- Genel Değişkenler ve Reset --- */
+:root {
+    --main-color: #f5f5f5; /* Açık arka plan */
+    --primary-color: #004aad; /* Koyu mavi */
+    --highlight-color: #ffde59; /* Sarı */
+    --text-color-dark: #333;
+    --text-color-light: #fff;
+    --card-bg: rgba(255, 255, 255, 0.98); /* Kart arka planı, hafif şeffaf */
+    --border-color: #e0e0e0; /* Açık gri border */
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --shadow-heavy: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif; /* Global font */
+}
+
+body {
+    background-color: var(--main-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* İçeriği dikeyde düzenler */
+}
+
+/* --- Arka Plan --- */
+.page-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('../images/yearbook.bg.jpg') no-repeat center center;
+    background-size: cover;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+/* --- Header (Mevcut yapıyı koruyoruz, sadece küçük ayarlamalar) --- */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px; /* Padding artırıldı */
+    background-color: var(--card-bg); /* Kart arka plan rengi */
+    border-radius: 40px;
+    margin: 15px auto; /* Margin artırıldı */
+    max-width: 1100px; /* Genişlik artırıldı */
+    box-shadow: var(--shadow-medium);
+    position: relative;
+    z-index: 10;
+}
+
+.logo img {
+    height: 50px; /* Logo boyutu artırıldı */
+}
+
+.navbar {
+    display: flex;
+    gap: 20px; /* Menü öğeleri arası boşluk */
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin-left: 30px;
+}
+
+.navbar a {
+    font-size: 1.05rem; /* Font boyutu biraz artırıldı */
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 12px; /* Linklere padding */
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.navbar a:hover, .navbar a.active {
+    color: var(--text-color-light);
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 74, 173, 0.2);
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Butonlar arası boşluk */
+}
+
+.buttons button {
+    background: none;
+    border: none;
+    font-size: 1.3rem; /* İkon boyutu artırıldı */
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.buttons button:hover {
+    transform: scale(1.1);
+    color: var(--highlight-color);
+}
+
+#menuBtn {
+    display: none; /* Mobil için gizli */
+}
+
+/* --- Ana İçerik Kapsayıcısı --- */
+.main-content-container {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1100px; /* Header ile aynı max-width */
+    margin: 30px auto 60px auto; /* Üst, sağ/sol, alt boşluk */
+    box-shadow: var(--shadow-heavy);
+    animation: fadeIn 1s ease-out; /* Sayfa yüklendiğinde hafif geçiş */
+    flex-grow: 1; /* Sayfanın kalan yüksekliğini kaplaması için */
+}
+
+/* --- Sayfa Başlığı --- */
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 3rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* İkon ile metin arası boşluk */
+    border-bottom: 2px solid rgba(0, 74, 173, 0.2);
+    padding-bottom: 20px;
+}
+
+/* --- Filtreleme Bölümü --- */
+.filter-section {
+    display: flex;
+    flex-direction: column; /* Alt alta sırala */
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.filter-label {
+    font-size: 1.2rem;
+    color: var(--text-color-dark);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 350px; /* Select kutusunun maksimum genişliği */
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    background-color: var(--main-color); /* Açık gri arkaplan */
+    color: var(--text-color-dark);
+    appearance: none; /* Varsayılan select okunu kaldır */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.select-wrapper select:focus {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 0 4px rgba(255, 222, 89, 0.3);
+    outline: none;
+}
+
+.select-arrow { /* Özel ok ikonu için stil */
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    font-size: 1rem;
+    pointer-events: none; /* Okun tıklanmamasını sağlar */
+}
+
+/* --- Yıllık Izgarası (Grid) --- */
+.yearbook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Daha büyük kartlar */
+    gap: 30px; /* Boşluk artırıldı */
+}
+
+/* --- Yıllık Kartları --- */
+.yearbook-card {
+    background-color: var(--text-color-light); /* Beyaz arka plan */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow-medium);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    overflow: hidden; /* Taşmaları gizle */
+}
+
+.yearbook-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-heavy);
+}
+
+/* Medya (Fotoğraf/Video) Önizleme */
+.media-preview {
+    width: 100%;
+    height: 220px; /* Medya için sabit yükseklik */
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.yearbook-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Resmi/videoyu kutuya sığdır */
+    display: block;
+}
+
+.video-preview .yearbook-media {
+    object-fit: contain; /* Videoyu orjinal oranında sığdır */
+    background-color: #000; /* Video alanı siyah olsun */
+}
+
+
+/* Yıllık Bilgileri */
+.yearbook-info {
+    flex-grow: 1; /* Bilgi kısmı kalan alanı kaplasın */
+    margin-bottom: 20px;
+}
+
+.yearbook-name {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.yearbook-nickname {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.yearbook-info p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: var(--text-color-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Bilgileri ortala */
+    gap: 8px; /* İkon ile metin arası boşluk */
+}
+
+.yearbook-info p strong {
+    color: #555;
+}
+
+.yearbook-info i {
+    color: var(--primary-color); /* İkon rengi */
+}
+
+.yearbook-date {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 10px;
+}
+
+/* Kart Eylemleri (Butonlar) */
+.card-actions {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçsin */
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.action-button {
+    flex: 1; /* Boşlukları eşit dağıt */
+    min-width: 120px; /* Minimum buton genişliği */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex; /* İkon ve metni yanyana hizala */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-light);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-button {
+    background-color: var(--highlight-color); /* Sarı */
+    color: var(--primary-color); /* Mavi */
+}
+
+.favorite-button:hover {
+    background-color: #ffd733; /* Hafif koyu sarı */
+}
+
+.delete-button {
+    background-color: #dc3545; /* Kırmızı */
+    color: var(--text-color-light); /* Beyaz */
+}
+
+.delete-button:hover {
+    background-color: #c82333; /* Hafif koyu kırmızı */
+}
+
+/* Bilgi Mesajı (Yıllık bulunamadığında) */
+.info-message {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 40px;
+    font-size: 1.3rem;
+    color: #666;
+    box-shadow: var(--shadow-medium);
+    display: none; /* Başlangıçta gizli */
+}
+.info-message i {
+    margin-right: 10px;
+    color: var(--highlight-color);
+}
+
+/* --- Toast Bildirimleri (profile.css ve create.css ile aynı) --- */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.toast.success {
+    background-color: #28a745; /* Yeşil */
+}
+
+.toast.error {
+    background-color: #dc3545; /* Kırmızı */
+}
+
+/* --- Mobil Uyumluluk --- */
+@media (max-width: 992px) {
+    .header {
+        padding: 8px 20px;
+        max-width: 95%;
+    }
+    .main-content-container {
+        padding: 30px;
+        margin: 20px auto 40px auto;
+        max-width: 95%;
+    }
+    .page-title {
+        font-size: 2.5rem;
+    }
+    .yearbook-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .yearbook-name {
+        font-size: 1.6rem;
+    }
+    .yearbook-nickname {
+        font-size: 1.1rem;
+    }
+    .yearbook-info p {
+        font-size: 0.95rem;
+    }
+    .action-button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        display: none;
+        flex-direction: column;
+        background-color: var(--card-bg);
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        left: 20px; /* Mobil menüyü tam genişlikte yap */
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: var(--shadow-medium);
+        z-index: 99;
+        margin: 0 auto;
+    }
+
+    .navbar.active {
+        display: flex;
+    }
+
+    #menuBtn {
+        display: inline-block;
+    }
+
+    .header .buttons {
+        gap: 10px;
+    }
+    .header .buttons button {
+        font-size: 1.1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        flex-direction: column; /* Mobil başlığı alt alta al */
+        gap: 8px;
+    }
+    .filter-section {
+        margin-bottom: 30px;
+    }
+    .select-wrapper {
+        max-width: 100%;
+    }
+    .info-message {
+        font-size: 1.1rem;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 8px 15px;
+    }
+    .logo img {
+        height: 40px;
+    }
+    .main-content-container {
+        padding: 20px;
+        margin: 15px auto 30px auto;
+    }
+    .page-title {
+        font-size: 1.8rem;
+    }
+    .yearbook-card {
+        padding: 15px;
+    }
+    .media-preview {
+        height: 180px;
+    }
+    .yearbook-name {
+        font-size: 1.5rem;
+    }
+    .yearbook-nickname {
+        font-size: 1rem;
+    }
+    .yearbook-info p {
+        font-size: 0.9rem;
+    }
+    .card-actions {
+        flex-direction: column; /* Mobil'de butonlar alt alta */
+        gap: 8px;
+    }
+    .action-button {
+        width: 100%; /* Mobil'de butonlar tam genişlik */
+    }
+    .toast {
+        font-size: 1rem;
+        padding: 10px 15px;
+        bottom: 15px;
+        right: 15px;
+    }
+}
+/* Kart Eylemleri (Butonlar) için genel stil */
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px; /* Buton grubu için üst boşluk */
+}
+
+.action-button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-button {
+    background-color: var(--highlight-color); /* Sarı */
+    color: var(--primary-color); /* Mavi */
+}
+
+.favorite-button:hover {
+    background-color: #ffd733; /* Hafif koyu sarı */
+}
+
+.delete-button {
+    background-color: #dc3545; /* Kırmızı */
+    color: var(--text-color-light); /* Beyaz */
+}
+
+.delete-button:hover {
+    background-color: #c82333; /* Hafif koyu kırmızı */
+}
+
+/* Yeni Buton Stilleri */
+.download-pdf-button {
+    background-color: #3498db; /* Mavi */
+    color: white;
+}
+.download-pdf-button:hover {
+    background-color: #217dbb;
+}
+
+.share-button {
+    background-color: #9b59b6; /* Mor */
+    color: white;
+}
+.share-button:hover {
+    background-color: #8e44ad;
+}
+
+/* Paylaşım Menüsü Pop-up Stilleri */
+.share-menu-popup {
+    position: absolute;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1001; /* Toast'ın üstünde olmalı */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.share-menu-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.share-menu-popup .share-option {
+    background-color: transparent;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.share-menu-popup .share-option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+.share-menu-popup .share-option i {
+    font-size: 1.1rem;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 480px) {
+    .card-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .action-button {
+        width: 100%;
+    }
+    .share-menu-popup {
+        left: 50% !important; /* Mobil'de ortala */
+        transform: translateX(-50%);
+        top: auto !important;
+        bottom: 20px; /* Alttan konumlandır */
+    }
+    .share-menu-popup.show {
+        transform: translateX(-50%) translateY(0);
+    }
+}

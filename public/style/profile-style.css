@@ -1,0 +1,190 @@
+/* style/profile-style.css */
+
+/* Genel kapsayıcı */
+.profile-container {
+    background-color: rgba(255, 255, 255, 0.95); /* Hafif şeffaf beyaz */
+    padding: 40px;
+    border-radius: 15px; /* Daha yuvarlak köşeler */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Daha belirgin gölge */
+    max-width: 500px; /* Genişliği biraz artırıldı */
+    margin: 80px auto; /* Yukarıdan boşluk ve ortalama */
+    text-align: center;
+    backdrop-filter: blur(5px); /* Arka planı hafif bulanıklaştır */
+    animation: fadeIn 0.8s ease-out; /* Sayfa yüklendiğinde hafif geçiş */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Başlık */
+.profile-title {
+    color: #004aad; /* Ana renk */
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* İkon ile metin arası boşluk */
+}
+
+/* Form grubu */
+.form-group {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Label ve ikon arası boşluk */
+}
+
+.form-group input {
+    width: calc(100% - 20px); /* Padding için ayarlama */
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Hafif yuvarlak inputlar */
+    font-size: 1.05rem;
+    color: #555;
+    transition: all 0.3s ease; /* Odaklanma geçişi */
+    box-sizing: border-box; /* Padding ve border genişliğe dahil */
+}
+
+.form-group input:focus {
+    border-color: #004aad; /* Odakta ana renk */
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2); /* Odakta hafif gölge */
+    outline: none; /* Varsayılan odak çerçevesini kaldır */
+}
+
+.form-group input[disabled] {
+    background-color: #e9ecef; /* Disabled input için farklı renk */
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Butonlar */
+.profile-form button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px; /* Buton köşeleri */
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.update-button {
+    background-color: #004aad; /* Ana renk */
+    color: white;
+    margin-top: 30px;
+    margin-bottom: 15px; /* Altındaki butonla boşluk */
+}
+
+.update-button:hover {
+    background-color: #003a8a; /* Hafif koyu ton */
+    transform: translateY(-2px); /* Hafif yukarı kalkma */
+    box-shadow: 0 5px 15px rgba(0, 74, 173, 0.3);
+}
+
+.delete-button {
+    background-color: #e74c3c; /* Kırmızı renk */
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c0392b; /* Kırmızı koyu ton */
+    transform: translateY(-2px); /* Hafif yukarı kalkma */
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Toast Mesajı Stilleri */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Başlangıçta gizli ve görünmez */
+    opacity: 0;
+    visibility: hidden; 
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; /* Geçişleri buraya ekledik */
+}
+
+/* JavaScript ile eklenecek sınıflar */
+.toast.show { 
+    opacity: 1;
+    visibility: visible;
+}
+
+.toast.success {
+    background-color: #28a745; /* Yeşil */
+}
+
+.toast.error {
+    background-color: #dc3545; /* Kırmızı */
+}
+
+/* Geri Dön Butonu */
+.back-button {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background-color: rgba(0, 74, 173, 0.8); /* Koyu mavi, hafif şeffaf */
+    color: white;
+    padding: 12px 18px;
+    border-radius: 50%; /* Yuvarlak buton */
+    font-size: 1.5rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.back-button:hover {
+    background-color: #003a8a;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobil uyumluluk için temel ayarlamalar */
+@media (max-width: 600px) {
+    .profile-container {
+        margin: 40px 20px;
+        padding: 30px;
+    }
+    .profile-title {
+        font-size: 1.8rem;
+    }
+    .form-group input,
+    .profile-form button {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+    .back-button {
+        top: 20px;
+        left: 20px;
+        padding: 10px 15px;
+        font-size: 1.3rem;
+    }
+}

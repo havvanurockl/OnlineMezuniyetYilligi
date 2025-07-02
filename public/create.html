@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Yıllık Oluştur - YEARLOG</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style/create-style.css">
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <a href="index.html" class="back-button" title="Ana Sayfaya Dön">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="main-container"> <div class="section-card">
+            <h2 class="section-title">
+                <i class="fas fa-chalkboard"></i> Sınıf Ekle
+            </h2>
+            <form id="classForm" class="create-form">
+                <div class="form-group">
+                    <label for="className">Sınıf / Grup Adı</label>
+                    <input type="text" id="className" placeholder="örneğin: 12-A veya Bilgisayar Grubu" required />
+                </div>
+                <button type="submit" class="primary-button">
+                    <i class="fas fa-plus-circle"></i> Sınıfı Ekle
+                </button>
+            </form>
+        </div>
+
+        <hr class="section-divider" />
+
+        <div class="section-card">
+            <h2 class="section-title">
+                <i class="fas fa-book-open"></i> Yıllık Oluştur
+            </h2>
+            <form id="yearbookForm" enctype="multipart/form-data" class="create-form">
+                <div class="form-group">
+                    <label for="classSelect">Sınıf Seç</label>
+                    <select id="classSelect" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Ad</label>
+                    <input type="text" id="name" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="surname">Soyad</label>
+                    <input type="text" id="surname" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="nickname">Lakap</label>
+                    <input type="text" id="nickname" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="lesson">En Sevdiği Ders</label>
+                    <input type="text" id="lesson" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="note">Arkadaşlarına Not</label>
+                    <textarea id="note" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group file-upload-group">
+                    <label for="photo" class="file-upload-label">
+                        <i class="fas fa-camera"></i> Fotoğraf Ekle
+                    </label>
+                    <input type="file" id="photo" accept="image/*" required />
+                    <span id="photoFileName" class="file-name">Dosya Seçilmedi</span>
+                </div>
+
+                <div class="form-group file-upload-group">
+                    <label for="video" class="file-upload-label">
+                        <i class="fas fa-video"></i> Video Ekle (isteğe bağlı)
+                    </label>
+                    <input type="file" id="video" accept="video/*">
+                    <span id="videoFileName" class="file-name">Dosya Seçilmedi</span>
+                </div>
+
+                <button type="submit" class="primary-button">
+                    <i class="fas fa-check-circle"></i> Yıllığı Oluştur
+                </button>
+            </form>
+        </div>
+
+        <hr class="section-divider" />
+
+        <div class="section-card action-card">
+            <h2 class="section-title">
+                <i class="fas fa-list-alt"></i> Yıllık İşlemleri
+            </h2>
+            <button id="showYearbookListBtn" class="secondary-button">
+                <i class="fas fa-eye"></i> Yıllık Listesini Göster
+            </button>
+
+            <div id="actionButtons" style="display: none; margin-top: 30px;">
+                <a id="downloadLink" class="download-link" download>
+                    <i class="fas fa-download"></i> Yıllığı İndir (PDF)
+                </a>
+
+                <div class="share-buttons">
+                    <p>Yıllığı paylaş:</p>
+                    <a id="whatsappShare" target="_blank" class="share-button whatsapp-button">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a id="emailShare" target="_blank" class="share-button email-button">
+                        <i class="fas fa-envelope"></i> E-posta
+                    </a>
+                    <button onclick="copyLink()" class="share-button copy-button">
+                        <i class="fas fa-copy"></i> Linki Kopyala
+                    </button>
+                </div>
+            </div>
+            
+            </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        // create.html içinde, en alttaki <script> tag'ının içeriği
+
+// Backend API URL'i
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Toast bildirim fonksiyonu (profile.html'deki gibi, tekrar burada tanımlıyoruz)
+function showToast(message, type = 'success', duration = 3000) {
+    const toastElement = document.getElementById("toast");
+    if (!toastElement) {
+        console.warn('Toast elementi bulunamadı.');
+        return;
+    }
+
+    toastElement.textContent = message;
+    toastElement.className = `toast ${type} show`; // 'show' sınıfını ekliyoruz
+    toastElement.style.display = 'block'; // Ensure it's block for visibility
+
+    setTimeout(() => {
+        toastElement.classList.remove('show'); // 'show' sınıfını kaldırarak geçişi tetikliyoruz
+        toastElement.addEventListener('transitionend', function handler() {
+            toastElement.style.display = 'none';
+            toastElement.removeEventListener('transitionend', handler);
+        }, { once: true });
+    }, duration);
+}
+
+// --- Sınıf Ekleme ---
+document.getElementById("classForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const className = document.getElementById("className").value;
+    try {
+        const response = await fetch(`${API_BASE_URL}/classes`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: className }) // Backend 'name' bekliyordu
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            showToast("Sınıf başarıyla eklendi.", "success");
+            document.getElementById("className").value = "";
+            loadClassList(); // Sınıf listesini yeniden yükle
+        } else {
+            showToast(`Hata: ${result.message || 'Sınıf eklenemedi.'}`, "error");
+        }
+    } catch (error) {
+        console.error("Sınıf eklenirken network hatası:", error);
+        showToast("Sınıf eklenirken bir hata oluştu.", "error");
+    }
+});
+
+// --- Yıllık Oluşturma ---
+document.getElementById("yearbookForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("class", document.getElementById("classSelect").value);
+    formData.append("name", document.getElementById("name").value);
+    formData.append("surname", document.getElementById("surname").value);
+    formData.append("nickname", document.getElementById("nickname").value);
+    formData.append("lesson", document.getElementById("lesson").value);
+    formData.append("note", document.getElementById("note").value);
+    
+    const photoFile = document.getElementById("photo").files[0];
+    const videoFile = document.getElementById("video").files[0];
+
+    if (photoFile) {
+        formData.append("photo", photoFile);
+    } else {
+        showToast("Fotoğraf alanı zorunludur.", "error");
+        return; // Eğer fotoğraf zorunluysa ve seçilmediyse işlemi durdur
+    }
+    
+    if (videoFile) {
+        formData.append("video", videoFile);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/yearbook`, {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            showToast("Yıllık başarıyla oluşturuldu!", "success");
+            // Formu temizle
+            document.getElementById("yearbookForm").reset();
+            document.getElementById("photoFileName").textContent = "Dosya Seçilmedi";
+            document.getElementById("videoFileName").textContent = "Dosya Seçilmedi";
+            
+            // Eğer yıllık oluşturulduktan sonra PDF/Paylaşım butonlarını göstermek isterseniz
+            // document.getElementById("actionButtons").style.display = "block";
+            // document.getElementById("downloadLink").href = `http://localhost:5000/downloads/yillik-${document.getElementById("classSelect").value}-${result.entry._id}.pdf`; // Örnek URL
+
+            setTimeout(() => {
+                window.location.href = 'yearbookList.html';
+            }, 2000); // Kullanıcının mesajı görmesi için
+        } else {
+            showToast(`Hata: ${result.message || 'Yıllık oluşturulamadı.'}`, "error");
+        }
+    } catch (error) {
+        console.error("Yıllık oluşturulurken network hatası:", error);
+        showToast("Yıllık oluşturulurken bir hata oluştu.", "error");
+    }
+});
+
+// --- Sınıf Listesi Yükle ---
+async function loadClassList() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/classes`);
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Sınıf listesi getirilemedi.');
+        }
+        const classes = await res.json();
+        const select = document.getElementById("classSelect");
+        select.innerHTML = "";
+        if (classes.length === 0) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Hiç sınıf bulunamadı";
+            option.disabled = true;
+            option.selected = true;
+            select.appendChild(option);
+            document.getElementById("yearbookForm").querySelector('button[type="submit"]').disabled = true; // Yıllık oluşturma butonunu devre dışı bırak
+        } else {
+            classes.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c.name;
+                option.textContent = c.name;
+                select.appendChild(option);
+            });
+            document.getElementById("yearbookForm").querySelector('button[type="submit"]').disabled = false; // Yıllık oluşturma butonunu etkinleştir
+        }
+    } catch (error) {
+        console.error("Sınıf listesi yüklenirken hata:", error);
+        showToast(`Sınıf listesi yüklenirken hata: ${error.message}`, "error");
+        const select = document.getElementById("classSelect");
+        select.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "Sınıflar yüklenemedi";
+        option.disabled = true;
+        option.selected = true;
+        select.appendChild(option);
+        document.getElementById("yearbookForm").querySelector('button[type="submit"]').disabled = true;
+    }
+}
+
+// --- Dosya Adı Gösterme ---
+document.getElementById("photo").addEventListener("change", function() {
+    const fileName = this.files.length > 0 ? this.files[0].name : "Dosya Seçilmedi";
+    document.getElementById("photoFileName").textContent = fileName;
+});
+
+document.getElementById("video").addEventListener("change", function() {
+    const fileName = this.files.length > 0 ? this.files[0].name : "Dosya Seçilmedi";
+    document.getElementById("videoFileName").textContent = fileName;
+});
+
+// --- Link Kopyalama ---
+function copyLink() {
+    const selectedClass = document.getElementById("classSelect").value;
+    if (!selectedClass) {
+        showToast("PDF indirmek için bir sınıf seçmelisiniz.", "error");
+        return;
+    }
+    const fileUrl = `http://localhost:5000/downloads/yillik-${selectedClass}.pdf`; 
+    navigator.clipboard.writeText(fileUrl).then(() => {
+        showToast("Bağlantı panoya kopyalandı!", "success");
+    }).catch(err => {
+        console.error('Linki kopyalarken hata:', err);
+        showToast("Linki kopyalanamadı.", "error");
+    });
+}
+
+// --- Sayfa Yüklendiğinde ---
+window.addEventListener("DOMContentLoaded", loadClassList);
+
+// Yıllık Listesini Göster butonu
+document.getElementById("showYearbookListBtn").addEventListener("click", () => {
+    window.location.href = 'yearbookList.html';
+});
+
+// PDF İndirme/Paylaşım butonlarını gösterme/gizleme (mantığını sizin belirlemeniz gerekiyor)
+// Örneğin, yıllık oluşturma başarılı olduğunda bu bölüm görünebilir.
+// Bu kısmın aktifleşmesi için JS'de bir mantık yazılması gerekir.
+// document.getElementById("actionButtons").style.display = "block";
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Profilim - YEARLOG</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style/profile-style.css"> 
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <a href="index.html" class="back-button" title="Ana Sayfaya Dön">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="profile-container">
+        <h2 class="profile-title">
+            <i class="fas fa-user-circle"></i> Profil Bilgilerim
+        </h2>
+        <form id="profileForm" class="profile-form">
+            <div class="form-group">
+                <label for="name">
+                    <i class="fas fa-signature"></i> Ad
+                </label>
+                <input type="text" id="name" required placeholder="Adınızı girin" />
+            </div>
+
+            <div class="form-group">
+                <label for="surname">
+                    <i class="fas fa-file-signature"></i> Soyad
+                </label>
+                <input type="text" id="surname" required placeholder="Soyadınızı girin" />
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> E-posta
+                </label>
+                <input type="email" id="email" disabled placeholder="E-posta adresiniz" />
+            </div>
+
+            <button type="submit" class="update-button">
+                <i class="fas fa-sync-alt"></i> Güncelle
+            </button>
+            <button type="button" id="deleteAccount" class="delete-button">
+                <i class="fas fa-trash-alt"></i> Hesabı Sil
+            </button>
+        </form>
+    </div>
+
+    <div id="toast" class="toast"></div> 
+
+    <script type="module" src="script.js/profile.js"></script>
+</body>
+
+</html>
