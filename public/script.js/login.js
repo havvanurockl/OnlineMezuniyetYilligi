@@ -1,43 +1,62 @@
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); 
-  
-  const toast = document.getElementById('toast');
-  const showToast = (msg, isError = false) => {
-    toast.textContent = msg;
-    toast.style.background = isError ? '#ff4444' : '#4CAF50';
-    toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 3000);
-  };
+// public/script.js/login.js - YENİ HALİ
 
-  try {
-    const response = await fetch('http://localhost:5000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value
-      })
-    });
+// Backend API URL'i
+const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com/api'; // BURAYI KENDİ CANLI BACKEND URL'İNİZLE DEĞİŞTİRİN
 
-    // Yanıtı JSON olarak direkt alıyoruz
-    const data = await response.json();
+// Global toast elementi referansı (login.html'de <div id="toast" class="toast"></div> olmalı)
+const toastElement = document.getElementById('toast');
 
-    if (!response.ok) {
-      throw new Error(data.error || 'Giriş başarısız');
+// Toast bildirim fonksiyonu (Diğer sayfalardaki ile aynı)
+function showToast(message, type = 'success', duration = 3000) {
+    if (!toastElement) {
+        console.warn('Toast elementi bulunamadı. Lütfen login.html dosyasında <div id="toast" class="toast"></div> elementinin olduğundan emin olun.');
+        return;
     }
 
-localStorage.setItem('token', data.token);
-localStorage.setItem('user', JSON.stringify(data.user));
-showToast('Giriş başarılı! Yönlendiriliyorsunuz...');
+    toastElement.textContent = message;
+    toastElement.className = `toast ${type} show`; // 'show' sınıfı CSS geçişleri için
+    toastElement.style.display = 'block'; // Elementi görünür yapar
 
-setTimeout(() => {
-  window.location.href = 'create.html'; 
-}, 2000);
+    setTimeout(() => {
+        toastElement.classList.remove('show'); // 'show' sınıfını kaldırarak gizleme geçişini başlat
+        toastElement.addEventListener('transitionend', function handler() {
+            toastElement.style.display = 'none'; // Geçiş bitince elementi tamamen gizle
+            toastElement.removeEventListener('transitionend', handler); // Dinleyiciyi kaldır
+        }, { once: true });
+    }, duration);
+}
 
-  } catch (error) {
-    console.error('Hata detayı:', error);
-    showToast(error.message || 'Sistemsel hata!', true);
-  }
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/login`, { // API_BASE_URL kullanıldı
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || 'Giriş başarısız'); // data.message de hata içerebilir
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showToast('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+
+        setTimeout(() => {
+            window.location.href = 'create.html';
+        }, 2000);
+
+    } catch (error) {
+        console.error('Giriş hatası detayı:', error);
+        showToast(error.message || 'Sistemsel bir hata oluştu!', 'error'); // Hata tipi belirtildi
+    }
 });

@@ -1,4 +1,7 @@
-// backend/public/script.js/profile.js YENİ HALİ
+// backend/public/script.js/profile.js - YENİ HALİ
+
+// Backend API URL'i
+const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com/api'; // BURAYI KENDİ CANLI BACKEND URL'İNİZLE DEĞİŞTİRİN
 
 document.addEventListener('DOMContentLoaded', async () => {
     const profileForm = document.getElementById('profileForm');
@@ -8,23 +11,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const deleteAccountBtn = document.getElementById('deleteAccount');
     const toast = document.getElementById('toast'); // Toast elementi için doğru referans
 
-    // Toast bildirim fonksiyonu - BURAYI GÜNCELLİYORUZ
-    function showToast(message, type = 'success', duration = 3000) { // duration parametresi ekledik
+    // Toast bildirim fonksiyonu
+    function showToast(message, type = 'success', duration = 3000) {
         if (!toast) {
             console.warn('Toast elementi bulunamadı.');
             return;
         }
 
         toast.textContent = message;
-        toast.className = `toast ${type} show`; // 'show' sınıfını ekliyoruz
-        toast.style.display = 'block'; // Yine de block yapabiliriz, visibility ile daha iyi kontrol edilir.
+        toast.className = `toast ${type} show`;
+        toast.style.display = 'block';
 
         setTimeout(() => {
-            toast.classList.remove('show'); // 'show' sınıfını kaldırarak geçişi tetikliyoruz
-            // Geçiş bittikten sonra display: none yapın (isteğe bağlı, visibility zaten gizleyecek)
+            toast.classList.remove('show');
             toast.addEventListener('transitionend', function handler() {
                 toast.style.display = 'none';
-                toast.removeEventListener('transitionend', handler); // Dinleyiciyi kaldır
+                toast.removeEventListener('transitionend', handler);
             }, { once: true });
         }, duration);
     }
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Eğer token yoksa, kullanıcıyı login sayfasına yönlendir
     if (!token) {
-        showToast("Profil bilgileri için giriş yapmalısınız.", "error", 2000); // Hata mesajı için süre kısaltılabilir
+        showToast("Profil bilgileri için giriş yapmalısınız.", "error", 2000);
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 1500);
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Profil bilgilerini yükle
     async function loadProfile() {
         try {
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch(`${API_BASE_URL}/profile`, { // API_BASE_URL kullanıldı
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}` // Token'ı gönder
@@ -68,7 +70,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             nameInput.value = user.name;
             surnameInput.value = user.surname;
             emailInput.value = user.email;
-            // Diğer alanlar varsa onları da buraya ekleyebilirsiniz (örn: user.username)
 
         } catch (error) {
             console.error("Profil yüklenirken hata:", error);
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const updatedSurname = surnameInput.value;
 
         try {
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch(`${API_BASE_URL}/profile`, { // API_BASE_URL kullanıldı
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch(`${API_BASE_URL}/profile`, { // API_BASE_URL kullanıldı
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

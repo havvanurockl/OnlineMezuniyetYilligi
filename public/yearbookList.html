@@ -55,418 +55,419 @@
         </div>
     </div>
 
-<div id="shareMenu" class="share-menu-popup" style="display: none;">
-    <button class="share-option whatsapp-share-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-    <button class="share-option email-share-btn"><i class="fas fa-envelope"></i> E-posta</button>
-    <button class="share-option copy-link-btn"><i class="fas fa-copy"></i> Link Kopyala</button>
-</div>
+    <div id="shareMenu" class="share-menu-popup" style="display: none;">
+        <button class="share-option whatsapp-share-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+        <button class="share-option email-share-btn"><i class="fas fa-envelope"></i> E-posta</button>
+        <button class="share-option copy-link-btn"><i class="fas fa-copy"></i> Link Kopyala</button>
+    </div>
 
-<div id="toast" class="toast"></div> <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <div id="toast" class="toast"></div>
 
-<script>
-    // Backend API URL'i
-    const API_BASE_URL = 'http://localhost:5000/api';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    // Toast bildirim fonksiyonu (Diğer sayfalardaki ile aynı)
-    function showToast(message, type = 'success', duration = 3000) {
-        const toastElement = document.getElementById("toast");
-        if (!toastElement) {
-            console.warn('Toast elementi bulunamadı.');
-            return;
-        }
+    <script>
+        // Backend API URL'i
+        const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com/api'; // BURAYI KENDİ CANLI BACKEND URL'İNİZLE DEĞİŞTİRİN
+        
+        // Netlify'dan aldığınız canlı FRONTEND URL'iniz (Paylaşım linkleri için)
+        const FRONTEND_BASE_URL = 'https://thriving-kangaroo-53e517.netlify.app'; // BURAYI KENDİ CANLI FRONTEND URL'İNİZLE DEĞİŞTİRİN
 
-        toastElement.textContent = message;
-        toastElement.className = `toast ${type} show`;
-        toastElement.style.display = 'block';
-
-        setTimeout(() => {
-            toastElement.classList.remove('show');
-            toastElement.addEventListener('transitionend', function handler() {
-                toastElement.style.display = 'none';
-                toastElement.removeEventListener('transitionend', handler);
-            }, { once: true });
-        }, duration);
-    }
-
-    // Favoriye ekle fonksiyonu
-    async function addToFavorites(yearbookEntryId) {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            showToast("Favorilere eklemek için giriş yapmalısınız.", "error");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/favorites`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ yearbookEntryId: yearbookEntryId })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Favoriye eklenirken bir hata oluştu.');
+        // Toast bildirim fonksiyonu (Diğer sayfalardaki ile aynı)
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastElement = document.getElementById("toast");
+            if (!toastElement) {
+                console.warn('Toast elementi bulunamadı.');
+                return;
             }
 
-            showToast("Yıllık favorilere eklendi!", "success");
-        } catch (error) {
-            console.error("Favoriye eklenirken hata:", error);
-            showToast(`Hata: ${error.message}`, 'error');
-        }
-    }
+            toastElement.textContent = message;
+            toastElement.className = `toast ${type} show`;
+            toastElement.style.display = 'block';
 
-    // Yıllığı sil fonksiyonu
-    async function deleteYearbook(yearbookEntryId) {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            showToast("Yıllığı silmek için giriş yapmalısınız.", "error");
-            return;
+            setTimeout(() => {
+                toastElement.classList.remove('show');
+                toastElement.addEventListener('transitionend', function handler() {
+                    toastElement.style.display = 'none';
+                    toastElement.removeEventListener('transitionend', handler);
+                }, { once: true });
+            }, duration);
         }
 
-        if (!confirm("Bu yıllık kaydını silmek istediğinize emin misiniz?")) {
-            return;
-        }
+        // Favoriye ekle fonksiyonu
+        async function addToFavorites(yearbookEntryId) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                showToast("Favorilere eklemek için giriş yapmalısınız.", "error");
+                return;
+            }
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/yearbook/${yearbookEntryId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            try {
+                const response = await fetch(`${API_BASE_URL}/favorites`, { // API_BASE_URL kullanıldı
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ yearbookEntryId: yearbookEntryId })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Favoriye eklenirken bir hata oluştu.');
                 }
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Yıllık silinirken bir hata oluştu.');
+                showToast("Yıllık favorilere eklendi!", "success");
+            } catch (error) {
+                console.error("Favoriye eklenirken hata:", error);
+                showToast(`Hata: ${error.message}`, 'error');
+            }
+        }
+
+        // Yıllığı sil fonksiyonu
+        async function deleteYearbook(yearbookEntryId) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                showToast("Yıllığı silmek için giriş yapmalısınız.", "error");
+                return;
             }
 
-            showToast("Yıllık başarıyla silindi.", "success");
-            document.getElementById(`yearbook-card-${yearbookEntryId}`).remove();
+            if (!confirm("Bu yıllık kaydını silmek istediğinize emin misiniz?")) {
+                return;
+            }
 
+            try {
+                const response = await fetch(`${API_BASE_URL}/yearbook/${yearbookEntryId}`, { // API_BASE_URL kullanıldı
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Yıllık silinirken bir hata oluştu.');
+                }
+
+                showToast("Yıllık başarıyla silindi.", "success");
+                document.getElementById(`yearbook-card-${yearbookEntryId}`).remove();
+
+                const yearbookListDiv = document.getElementById('yearbookList');
+                const noEntriesMessageDiv = document.getElementById('noEntriesMessage');
+                if (yearbookListDiv.children.length === 0) {
+                    noEntriesMessageDiv.innerHTML = `<i class="fas fa-info-circle"></i> "${document.getElementById('classSelect').value}" sınıfına ait henüz yıllık girişi bulunmamaktadır.`;
+                    noEntriesMessageDiv.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error("Yıllık silinirken hata:", error);
+                showToast(`Hata: ${error.message}`, 'error');
+            }
+        }
+
+        // Sınıf listesini yükleme fonksiyonu
+        async function loadClassList() {
+            const classSelect = document.getElementById('classSelect');
+            try {
+                const response = await fetch(`${API_BASE_URL}/classes`); // API_BASE_URL kullanıldı
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP hata! Durum: ${response.status}`);
+                }
+                const classes = await response.json();
+
+                classSelect.innerHTML = '<option value="">-- Tüm Sınıflar --</option>'; 
+
+                if (classes.length === 0) {
+                    showToast("Henüz hiç sınıf bulunmamaktadır.", "info");
+                    classSelect.innerHTML = '<option value="" disabled selected>-- Hiç Sınıf Yok --</option>';
+                    document.getElementById('noEntriesMessage').innerHTML = '<i class="fas fa-info-circle"></i> Henüz hiç sınıf bulunmamaktadır. Yeni bir yıllık oluşturmak için lütfen önce bir sınıf ekleyin.';
+                    document.getElementById('noEntriesMessage').style.display = 'block';
+                } else {
+                    classes.forEach(cls => {
+                        const option = document.createElement('option');
+                        option.value = cls.name;
+                        option.textContent = cls.name;
+                        classSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error("Sınıf listesi yüklenirken hata:", error);
+                showToast(`Sınıflar yüklenemedi: ${error.message}`, 'error'); 
+                classSelect.innerHTML = '<option value="" disabled selected>-- Sınıflar Yüklenemedi --</option>';
+                document.getElementById('noEntriesMessage').innerHTML = `<i class="fas fa-exclamation-triangle"></i> Sınıflar yüklenirken bir hata oluştu: ${error.message}`;
+                document.getElementById('noEntriesMessage').style.display = 'block';
+            }
+        }
+
+        // Yıllık listesini yükleme fonksiyonu
+        async function loadYearbookList(className = '') {
             const yearbookListDiv = document.getElementById('yearbookList');
             const noEntriesMessageDiv = document.getElementById('noEntriesMessage');
-            if (yearbookListDiv.children.length === 0) {
-                noEntriesMessageDiv.innerHTML = `<i class="fas fa-info-circle"></i> "${document.getElementById('classSelect').value}" sınıfına ait henüz yıllık girişi bulunmamaktadır.`;
+            yearbookListDiv.innerHTML = ''; // Önceki içeriği temizle
+            noEntriesMessageDiv.style.display = 'none'; // Önceki hata/mesajı gizle
+
+            if (!className || className === '') {
+                noEntriesMessageDiv.innerHTML = '<i class="fas fa-info-circle"></i> Lütfen listelemek için bir sınıf seçin.';
+                noEntriesMessageDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                let url = `${API_BASE_URL}/yearbook/all`; // API_BASE_URL kullanıldı
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Yıllık listesi getirilirken bir hata oluştu.');
+                }
+
+                let yearbookEntries = await response.json(); 
+
+                // Frontend'de seçilen sınıfa göre filtreleme
+                yearbookEntries = yearbookEntries.filter(entry => entry.class === className);
+
+                if (yearbookEntries.length === 0) {
+                    noEntriesMessageDiv.innerHTML = `<i class="fas fa-info-circle"></i> "${className}" sınıfına ait henüz yıllık girişi bulunmamaktadır.`;
+                    noEntriesMessageDiv.style.display = 'block'; 
+                } else {
+                    yearbookEntries.forEach(entry => {
+                        const card = document.createElement('div');
+                        card.className = 'yearbook-card';
+                        card.id = `yearbook-card-${entry._id}`; // Silme işlemi için benzersiz ID ekle
+
+                        let mediaContent = '';
+                        // Resim ve video yollarını doğru oluşturma (backend'den gelen yollar '/uploads/...' şeklindedir)
+                        const photoSrc = entry.photo ? `${API_BASE_URL.replace('/api', '')}${entry.photo}` : '';
+                        const videoSrc = entry.video ? `${API_BASE_URL.replace('/api', '')}${entry.video}` : '';
+
+                        if (entry.photo) {
+                            mediaContent += `<div class="media-preview photo-preview">
+                                                <img class="yearbook-media" src="${photoSrc}" alt="${entry.name}'s Photo">
+                                             </div>`;
+                        }
+                        if (entry.video) {
+                            mediaContent += `<div class="media-preview video-preview">
+                                                <video class="yearbook-media" controls src="${videoSrc}"></video>
+                                             </div>`;
+                        }
+
+                        card.innerHTML = `
+                        ${mediaContent}
+                        <div class="yearbook-info">
+                            <h3 class="yearbook-name">${entry.name} ${entry.surname} <span class="yearbook-nickname">(${entry.nickname})</span></h3>
+                            <p class="yearbook-class"><i class="fas fa-school"></i> <strong>Sınıf:</strong> ${entry.class}</p>
+                            <p class="yearbook-lesson"><i class="fas fa-book-open"></i> <strong>En Sevdiği Ders:</strong> ${entry.lesson}</p>
+                            <p class="yearbook-note"><i class="fas fa-clipboard"></i> <strong>Not:</strong> ${entry.note}</p>
+                            <p class="yearbook-date"><i class="fas fa-calendar-alt"></i> ${new Date(entry.createdAt).toLocaleDateString('tr-TR')}</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-button favorite-button" data-id="${entry._id}">
+                                <i class="fas fa-star"></i> Favorilere Ekle
+                            </button>
+                            <button class="action-button delete-button" data-id="${entry._id}">
+                                <i class="fas fa-trash-alt"></i> Sil
+                            </button>
+                            <button class="action-button download-pdf-button" data-id="${entry._id}" data-class="${entry.class}" data-name="${entry.name}">
+                                <i class="fas fa-file-pdf"></i> PDF İndir
+                            </button>
+                            <button class="action-button share-button" data-id="${entry._id}" data-class="${entry.class}" data-name="${entry.name}" data-nickname="${entry.nickname}" data-lesson="${entry.lesson}" data-note="${entry.note}">
+                                <i class="fas fa-share-alt"></i> Paylaş
+                            </button>
+                        </div>
+                        `;
+                        yearbookListDiv.appendChild(card); // Kartı DOM'a ekledik.
+
+                        // Butonlara olay dinleyicileri ekle
+                        const favoriteBtn = card.querySelector('.favorite-button');
+                        const deleteBtn = card.querySelector('.delete-button');
+                        const downloadPdfBtn = card.querySelector('.download-pdf-button');
+                        const shareBtn = card.querySelector('.share-button');
+
+                        if (favoriteBtn) {
+                            favoriteBtn.addEventListener('click', () => {
+                                console.log(`Favorilere Ekle butonu tıklandı (ID: ${entry._id})!`);
+                                addToFavorites(entry._id);
+                            });
+                        }
+                        if (deleteBtn) {
+                            deleteBtn.addEventListener('click', () => {
+                                console.log(`Sil butonu tıklandı (ID: ${entry._id})!`);
+                                deleteYearbook(entry._id);
+                            });
+                        }
+                        if (downloadPdfBtn) {
+                            downloadPdfBtn.addEventListener('click', () => {
+                                console.log(`PDF İndir butonu tıklandı (ID: ${entry._id})!`);
+                                downloadYearbookPdf(entry); // PDF indirme fonksiyonunu çağır
+                            });
+                        }
+                        if (shareBtn) {
+                            shareBtn.addEventListener('click', (e) => {
+                                console.log(`Paylaş butonu tıklandı (ID: ${entry._id})!`);
+                                openShareMenu(e, entry); // Paylaşım menüsü fonksiyonunu çağır
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Yıllık listesi yüklenirken hata:", error);
+                showToast(`Hata: ${error.message}`, 'error');
+                noEntriesMessageDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Yıllıklar yüklenirken bir hata oluştu: ${error.message}`;
                 noEntriesMessageDiv.style.display = 'block';
             }
-
-        } catch (error) {
-            console.error("Yıllık silinirken hata:", error);
-            showToast(`Hata: ${error.message}`, 'error');
-        }
-    }
-
-    // Sınıf listesini yükleme fonksiyonu
-    async function loadClassList() {
-        const classSelect = document.getElementById('classSelect');
-        try {
-            const response = await fetch(`${API_BASE_URL}/classes`);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP hata! Durum: ${response.status}`);
-            }
-            const classes = await response.json();
-
-            classSelect.innerHTML = '<option value="">-- Tüm Sınıflar --</option>'; 
-
-            if (classes.length === 0) {
-                showToast("Henüz hiç sınıf bulunmamaktadır.", "info");
-                classSelect.innerHTML = '<option value="" disabled selected>-- Hiç Sınıf Yok --</option>';
-                document.getElementById('noEntriesMessage').innerHTML = '<i class="fas fa-info-circle"></i> Henüz hiç sınıf bulunmamaktadır. Yeni bir yıllık oluşturmak için lütfen önce bir sınıf ekleyin.';
-                document.getElementById('noEntriesMessage').style.display = 'block';
-            } else {
-                classes.forEach(cls => {
-                    const option = document.createElement('option');
-                    option.value = cls.name;
-                    option.textContent = cls.name;
-                    classSelect.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error("Sınıf listesi yüklenirken hata:", error);
-            showToast(`Sınıflar yüklenemedi: ${error.message}`, 'error'); 
-            classSelect.innerHTML = '<option value="" disabled selected>-- Sınıflar Yüklenemedi --</option>';
-            document.getElementById('noEntriesMessage').innerHTML = `<i class="fas fa-exclamation-triangle"></i> Sınıflar yüklenirken bir hata oluştu: ${error.message}`;
-            document.getElementById('noEntriesMessage').style.display = 'block';
-        }
-    }
-
-    // Yıllık listesini yükleme fonksiyonu
-    async function loadYearbookList(className = '') {
-        const yearbookListDiv = document.getElementById('yearbookList');
-        const noEntriesMessageDiv = document.getElementById('noEntriesMessage');
-        yearbookListDiv.innerHTML = ''; // Önceki içeriği temizle
-        noEntriesMessageDiv.style.display = 'none'; // Önceki hata/mesajı gizle
-
-        if (!className || className === '') {
-            noEntriesMessageDiv.innerHTML = '<i class="fas fa-info-circle"></i> Lütfen listelemek için bir sınıf seçin.';
-            noEntriesMessageDiv.style.display = 'block';
-            return;
         }
 
-        try {
-            let url = `${API_BASE_URL}/yearbook/all`; // Tüm yıllıklar endpoint'i
+        // --- PDF İndirme Fonksiyonu ---
+        async function downloadYearbookPdf(entry) {
+            showToast("PDF oluşturuluyor...", "info", 2000);
 
-            const response = await fetch(url);
+            const content = document.createElement('div');
+            content.style.padding = '20px';
+            content.style.fontFamily = 'Arial, sans-serif';
+            content.style.fontSize = '12px';
+            content.style.lineHeight = '1.5';
+            content.style.color = '#333';
+            content.style.backgroundColor = '#f9f9f9';
+            content.style.border = '1px solid #eee';
+            content.style.borderRadius = '10px';
+            content.style.maxWidth = '700px'; // PDF içeriğinin genişliğini belirler, A4'e sığacak şekilde
+            content.style.margin = 'auto'; // PDF'i ortala
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Yıllık listesi getirilirken bir hata oluştu.');
+            let mediaHtml = '';
+            // Medya yolu için API_BASE_URL kullanıldı
+            const photoSrc = entry.photo ? `${API_BASE_URL.replace('/api', '')}${entry.photo}` : '';
+            const videoSrc = entry.video ? `${API_BASE_URL.replace('/api', '')}${entry.video}` : '';
+
+            if (entry.photo) {
+                mediaHtml += `<img src="${photoSrc}" style="max-width: 100%; height: auto; display: block; margin-bottom: 15px; border-radius: 8px;">`;
+            }
+            if (entry.video) {
+                mediaHtml += `<video controls src="${videoSrc}" style="max-width: 100%; height: auto; display: block; margin-bottom: 15px; border-radius: 8px;"></video>`;
             }
 
-            let yearbookEntries = await response.json(); 
+            content.innerHTML = `
+                <h1 style="color: #004aad; text-align: center; font-size: 24px; margin-bottom: 20px;">Yıllık Kaydı</h1>
+                <div style="text-align: center; margin-bottom: 20px;">${mediaHtml}</div>
+                <p><strong>Ad:</strong> ${entry.name}</p>
+                <p><strong>Soyad:</strong> ${entry.surname}</p>
+                <p><strong>Lakap:</strong> ${entry.nickname}</p>
+                <p><strong>Sınıf:</strong> ${entry.class}</p>
+                <p><strong>En Sevdiği Ders:</strong> ${entry.lesson}</p>
+                <p style="margin-top: 15px;"><strong>Not:</strong> ${entry.note}</p>
+                <p style="font-size: 10px; color: #888; text-align: right; margin-top: 20px;">Oluşturulma Tarihi: ${new Date(entry.createdAt).toLocaleDateString('tr-TR')}</p>
+            `;
 
-            // Frontend'de seçilen sınıfa göre filtreleme
-            yearbookEntries = yearbookEntries.filter(entry => entry.class === className);
+            const filename = `Yillik-${entry.name}-${entry.surname}.pdf`;
 
-            if (yearbookEntries.length === 0) {
-                noEntriesMessageDiv.innerHTML = `<i class="fas fa-info-circle"></i> "${className}" sınıfına ait henüz yıllık girişi bulunmamaktadır.`;
-                noEntriesMessageDiv.style.display = 'block'; 
-            } else {
-                yearbookEntries.forEach(entry => {
-                    const card = document.createElement('div');
-                    card.className = 'yearbook-card';
-                    card.id = `yearbook-card-${entry._id}`; // Silme işlemi için benzersiz ID ekle
-
-                    let mediaContent = '';
-                    const photoSrc = entry.photo ? `http://localhost:5000${entry.photo}` : '';
-                    const videoSrc = entry.video ? `http://localhost:5000${entry.video}` : '';
-
-                    if (entry.photo) {
-                        mediaContent += `<div class="media-preview photo-preview">
-                                            <img class="yearbook-media" src="${photoSrc}" alt="${entry.name}'s Photo">
-                                         </div>`;
+            try {
+                // html2pdf kütüphanesi ayarları güncellendi
+                const pdfOptions = {
+                    margin: [15, 15, 15, 15],
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2.5,
+                        logging: true,
+                        dpi: 192,
+                        letterRendering: true,
+                        useCORS: true
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { 
+                        mode: ['css', 'avoid-all'],
+                        before: '.page-break-before'
                     }
-                    if (entry.video) {
-                        mediaContent += `<div class="media-preview video-preview">
-                                            <video class="yearbook-media" controls src="${videoSrc}"></video>
-                                         </div>`;
-                    }
+                };
 
-                    card.innerHTML = `
-                    ${mediaContent}
-                    <div class="yearbook-info">
-                        <h3 class="yearbook-name">${entry.name} ${entry.surname} <span class="yearbook-nickname">(${entry.nickname})</span></h3>
-                        <p class="yearbook-class"><i class="fas fa-school"></i> <strong>Sınıf:</strong> ${entry.class}</p>
-                        <p class="yearbook-lesson"><i class="fas fa-book-open"></i> <strong>En Sevdiği Ders:</strong> ${entry.lesson}</p>
-                        <p class="yearbook-note"><i class="fas fa-clipboard"></i> <strong>Not:</strong> ${entry.note}</p>
-                        <p class="yearbook-date"><i class="fas fa-calendar-alt"></i> ${new Date(entry.createdAt).toLocaleDateString('tr-TR')}</p>
-                    </div>
-                    <div class="card-actions">
-                        <button class="action-button favorite-button" data-id="${entry._id}">
-                            <i class="fas fa-star"></i> Favorilere Ekle
-                        </button>
-                        <button class="action-button delete-button" data-id="${entry._id}">
-                            <i class="fas fa-trash-alt"></i> Sil
-                        </button>
-                        <button class="action-button download-pdf-button" data-id="${entry._id}" data-class="${entry.class}" data-name="${entry.name}">
-                            <i class="fas fa-file-pdf"></i> PDF İndir
-                        </button>
-                        <button class="action-button share-button" data-id="${entry._id}" data-class="${entry.class}" data-name="${entry.name}" data-nickname="${entry.nickname}" data-lesson="${entry.lesson}" data-note="${entry.note}">
-                            <i class="fas fa-share-alt"></i> Paylaş
-                        </button>
-                    </div>
-                    `;
-                    yearbookListDiv.appendChild(card); // Kartı DOM'a ekledik.
-
-                    // Butonlara olay dinleyicileri ekle
-                    const favoriteBtn = card.querySelector('.favorite-button');
-                    const deleteBtn = card.querySelector('.delete-button');
-                    const downloadPdfBtn = card.querySelector('.download-pdf-button');
-                    const shareBtn = card.querySelector('.share-button');
-
-                    if (favoriteBtn) {
-                        favoriteBtn.addEventListener('click', () => {
-                            console.log(`Favorilere Ekle butonu tıklandı (ID: ${entry._id})!`);
-                            addToFavorites(entry._id);
-                        });
-                    }
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', () => {
-                            console.log(`Sil butonu tıklandı (ID: ${entry._id})!`);
-                            deleteYearbook(entry._id);
-                        });
-                    }
-                    if (downloadPdfBtn) {
-                        downloadPdfBtn.addEventListener('click', () => {
-                            console.log(`PDF İndir butonu tıklandı (ID: ${entry._id})!`);
-                            downloadYearbookPdf(entry); // PDF indirme fonksiyonunu çağır
-                        });
-                    }
-                    if (shareBtn) {
-                        shareBtn.addEventListener('click', (e) => {
-                            console.log(`Paylaş butonu tıklandı (ID: ${entry._id})!`);
-                            openShareMenu(e, entry); // Paylaşım menüsü fonksiyonunu çağır
-                        });
-                    }
-                });
+                await html2pdf().set(pdfOptions).from(content).save();
+                showToast("PDF başarıyla indirildi!", "success");
+            } catch (error) {
+                console.error("PDF oluşturulurken hata:", error);
+                showToast("PDF oluşturulurken bir hata oluştu.", "error");
             }
-        } catch (error) {
-            console.error("Yıllık listesi yüklenirken hata:", error);
-            showToast(`Hata: ${error.message}`, 'error');
-            noEntriesMessageDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Yıllıklar yüklenirken bir hata oluştu: ${error.message}`;
-            noEntriesMessageDiv.style.display = 'block';
         }
-    }
 
-    // --- PDF İndirme Fonksiyonu ---
-    // BU KOD BLOGU downloadYearbookPdf FUNKSİYONUNU TANIMLAR
-    // --- PDF İndirme Fonksiyonu ---
-async function downloadYearbookPdf(entry) {
-    showToast("PDF oluşturuluyor...", "info", 2000);
+        // --- Paylaşım Menüsü Fonksiyonları ---
+        const shareMenu = document.getElementById('shareMenu');
+        let currentYearbookEntry = null;
 
-    const content = document.createElement('div');
-    content.style.padding = '20px';
-    content.style.fontFamily = 'Arial, sans-serif';
-    content.style.fontSize = '12px';
-    content.style.lineHeight = '1.5';
-    content.style.color = '#333';
-    content.style.backgroundColor = '#f9f9f9';
-    content.style.border = '1px solid #eee';
-    content.style.borderRadius = '10px';
-    content.style.maxWidth = '700px'; // PDF içeriğinin genişliğini belirler, A4'e sığacak şekilde
-    content.style.margin = 'auto'; // PDF'i ortala
+        function openShareMenu(event, entry) {
+            currentYearbookEntry = entry;
+            shareMenu.style.display = 'flex';
+            shareMenu.style.top = `${event.clientY + 10}px`;
+            shareMenu.style.left = `${event.clientX - shareMenu.offsetWidth / 2}px`;
+            shareMenu.classList.add('show');
 
-    let mediaHtml = '';
-    const photoSrc = entry.photo ? `http://localhost:5000${entry.photo}` : '';
-    const videoSrc = entry.video ? `http://localhost:5000${entry.video}` : '';
+            document.addEventListener('click', closeShareMenuOutside);
+        }
 
-    if (entry.photo) {
-        // Resimlerin tam yüklenmesini beklemek için onload ekleyebiliriz (daha gelişmiş senaryolar için)
-        mediaHtml += `<img src="${photoSrc}" style="max-width: 100%; height: auto; display: block; margin-bottom: 15px; border-radius: 8px;">`;
-    }
-    if (entry.video) {
-        mediaHtml += `<video controls src="${videoSrc}" style="max-width: 100%; height: auto; display: block; margin-bottom: 15px; border-radius: 8px;"></video>`;
-    }
-
-    content.innerHTML = `
-        <h1 style="color: #004aad; text-align: center; font-size: 24px; margin-bottom: 20px;">Yıllık Kaydı</h1>
-        <div style="text-align: center; margin-bottom: 20px;">${mediaHtml}</div>
-        <p><strong>Ad:</strong> ${entry.name}</p>
-        <p><strong>Soyad:</strong> ${entry.surname}</p>
-        <p><strong>Lakap:</strong> ${entry.nickname}</p>
-        <p><strong>Sınıf:</strong> ${entry.class}</p>
-        <p><strong>En Sevdiği Ders:</strong> ${entry.lesson}</p>
-        <p style="margin-top: 15px;"><strong>Not:</strong> ${entry.note}</p>
-        <p style="font-size: 10px; color: #888; text-align: right; margin-top: 20px;">Oluşturulma Tarihi: ${new Date(entry.createdAt).toLocaleDateString('tr-TR')}</p>
-    `;
-
-    const filename = `Yillik-${entry.name}-${entry.surname}.pdf`;
-
-    try {
-        // html2pdf kütüphanesi ayarları güncellendi
-        const pdfOptions = {
-            margin: [15, 15, 15, 15], // Tüm kenarlardan biraz daha fazla boşluk (15mm)
-            filename: filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale: 2.5, // Ölçek faktörünü biraz artırdık (daha yüksek çözünürlük)
-                logging: true,
-                dpi: 192,
-                letterRendering: true,
-                useCORS: true // Çapraz kaynaklı resimler için CORS'u etkinleştirin
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { 
-                mode: ['css', 'avoid-all'], // CSS kurallarına göre veya içeriği bölerek yeni sayfa oluştur
-                before: '.page-break-before' // Belirli bir sınıfa sahip elemandan önce sayfa sonu
+        function closeShareMenuOutside(event) {
+            if (!shareMenu.contains(event.target) && !event.target.classList.contains('share-button')) {
+                shareMenu.classList.remove('show');
+                shareMenu.addEventListener('transitionend', function handler() {
+                    shareMenu.style.display = 'none';
+                    shareMenu.removeEventListener('transitionend', handler);
+                }, { once: true });
+                document.removeEventListener('click', closeShareMenuOutside);
             }
-        };
+        }
 
-        await html2pdf().set(pdfOptions).from(content).save();
-        showToast("PDF başarıyla indirildi!", "success");
-    } catch (error) {
-        console.error("PDF oluşturulurken hata:", error);
-        showToast("PDF oluşturulurken bir hata oluştu.", "error");
-    }
-}
-
-    // --- Paylaşım Menüsü Fonksiyonları ---
-    // BU KOD BLOĞU openShareMenu VE closeShareMenuOutside FONKSİYONLARINI TANIMLAR
-    const shareMenu = document.getElementById('shareMenu'); // Bu satırın global alanda olduğundan emin olun
-    let currentYearbookEntry = null; // Bu satırın global alanda olduğundan emin olun
-
-    function openShareMenu(event, entry) {
-        currentYearbookEntry = entry;
-        shareMenu.style.display = 'flex';
-        shareMenu.style.top = `${event.clientY + 10}px`;
-        shareMenu.style.left = `${event.clientX - shareMenu.offsetWidth / 2}px`;
-        shareMenu.classList.add('show');
-
-        document.addEventListener('click', closeShareMenuOutside);
-    }
-
-    function closeShareMenuOutside(event) {
-        if (!shareMenu.contains(event.target) && !event.target.classList.contains('share-button')) {
+        shareMenu.querySelector('.whatsapp-share-btn').addEventListener('click', () => {
+            if (!currentYearbookEntry) return;
+            // FRONTEND_BASE_URL kullanıldı
+            const shareText = `Yıllığımı kontrol et! ${currentYearbookEntry.name} ${currentYearbookEntry.surname} (${currentYearbookEntry.nickname})\n\nNot: ${currentYearbookEntry.note}\n\nLink: ${FRONTEND_BASE_URL}/yearbookList.html?id=${currentYearbookEntry._id}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
             shareMenu.classList.remove('show');
-            shareMenu.addEventListener('transitionend', function handler() {
-                shareMenu.style.display = 'none';
-                shareMenu.removeEventListener('transitionend', handler);
-            }, { once: true });
-            document.removeEventListener('click', closeShareMenuOutside);
-        }
-    }
-
-    // Paylaşım menüsü butonlarının olay dinleyicileri (shareMenu burada tanımlı olmalı)
-    shareMenu.querySelector('.whatsapp-share-btn').addEventListener('click', () => {
-        if (!currentYearbookEntry) return;
-        const shareText = `Yıllığımı kontrol et! ${currentYearbookEntry.name} ${currentYearbookEntry.surname} (${currentYearbookEntry.nickname})\n\nNot: ${currentYearbookEntry.note}\n\nLink: http://localhost:8080/yearbookList.html?id=${currentYearbookEntry._id}`;
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
-        shareMenu.classList.remove('show');
-    });
-
-    shareMenu.querySelector('.email-share-btn').addEventListener('click', () => {
-        if (!currentYearbookEntry) return;
-        const subject = `Yıllık - ${currentYearbookEntry.name} ${currentYearbookEntry.surname}`;
-        const body = `Merhaba,\n\n${currentYearbookEntry.name} ${currentYearbookEntry.surname}'ın (${currentYearbookEntry.nickname}) yıllık kaydını paylaşmak istedim.\n\nNot: ${currentYearbookEntry.note}\n\nLink: http://localhost:8080/yearbookList.html?id=${currentYearbookEntry._id}`;
-        window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-        shareMenu.classList.remove('show');
-    });
-
-    shareMenu.querySelector('.copy-link-btn').addEventListener('click', () => {
-        if (!currentYearbookEntry) return;
-        const link = `http://localhost:8080/yearbookList.html?id=${currentYearbookEntry._id}`;
-        navigator.clipboard.writeText(link)
-            .then(() => {
-                showToast("Yıllık bağlantısı kopyalandı!", "success");
-            })
-            .catch(err => {
-                console.error('Link kopyalanamadı:', err);
-                showToast("Linki kopyalanamadı.", "error");
-            });
-        shareMenu.classList.remove('show');
-    });
-
-    // Sayfa yüklendiğinde çalışacaklar (DOMContentLoaded)
-    document.addEventListener('DOMContentLoaded', async () => {
-        await loadClassList(); // Sınıf listesini yükle
-
-        const classSelect = document.getElementById('classSelect');
-
-        // Sınıf seçimi değiştiğinde yıllık listesini filtrele
-        classSelect.addEventListener('change', (event) => {
-            loadYearbookList(event.target.value); // Seçilen sınıfın adını gönder
         });
 
-        // Mobil menü butonu
-        const menuBtn = document.getElementById('menuBtn');
-        const navLinks = document.getElementById('navLinks');
-        if (menuBtn && navLinks) {
-            menuBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
+        shareMenu.querySelector('.email-share-btn').addEventListener('click', () => {
+            if (!currentYearbookEntry) return;
+            const subject = `Yıllık - ${currentYearbookEntry.name} ${currentYearbookEntry.surname}`;
+            // FRONTEND_BASE_URL kullanıldı
+            const body = `Merhaba,\n\n${currentYearbookEntry.name} ${currentYearbookEntry.surname}'ın (${currentYearbookEntry.nickname}) yıllık kaydını paylaşmak istedim.\n\nNot: ${currentYearbookEntry.note}\n\nLink: ${FRONTEND_BASE_URL}/yearbookList.html?id=${currentYearbookEntry._id}`;
+            window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            shareMenu.classList.remove('show');
+        });
+
+        shareMenu.querySelector('.copy-link-btn').addEventListener('click', () => {
+            if (!currentYearbookEntry) return;
+            // FRONTEND_BASE_URL kullanıldı
+            const link = `${FRONTEND_BASE_URL}/yearbookList.html?id=${currentYearbookEntry._id}`;
+            navigator.clipboard.writeText(link)
+                .then(() => {
+                    showToast("Yıllık bağlantısı kopyalandı!", "success");
+                })
+                .catch(err => {
+                    console.error('Link kopyalanamadı:', err);
+                    showToast("Linki kopyalanamadı.", "error");
+                });
+            shareMenu.classList.remove('show');
+        });
+
+        // Sayfa yüklendiğinde çalışacaklar (DOMContentLoaded)
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadClassList(); // Sınıf listesini yükle
+
+            const classSelect = document.getElementById('classSelect');
+
+            // Sınıf seçimi değiştiğinde yıllık listesini filtrele
+            classSelect.addEventListener('change', (event) => {
+                loadYearbookList(event.target.value); // Seçilen sınıfın adını gönder
             });
-        }
 
-        // Başlangıçta tüm yıllıklar yerine "lütfen sınıf seçin" mesajı gösterilsin.
-        document.getElementById('noEntriesMessage').innerHTML = '<i class="fas fa-info-circle"></i> Lütfen listelemek için bir sınıf seçin.';
-        document.getElementById('noEntriesMessage').style.display = 'block';
-    });
-</script>
-</body>
+            // Mobil menü butonu
+            const menuBtn = document.getElementById('menuBtn');
+            const navLinks = document.getElementById('navLinks');
+            if (menuBtn && navLinks) {
+                menuBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
 
-</html>
+            // Başlangıçta tüm yıllıklar yerine "lütfen sınıf seçin" mesajı gösterilsin.
+            document.getElementById('noEntriesMessage').innerHTML = '<i class="fas fa-info-circle"></i> Lütfen listelemek için bir sınıf seçin.';
+            document.getElementById('noEntriesMessage').style.display = 'block';
+        });

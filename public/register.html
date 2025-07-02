@@ -2,69 +2,98 @@
 <html lang="tr">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Kayıt Ol - YEARLOG</title>
-  <link rel="stylesheet" href="style/style.css">
+    <meta charset="UTF-8">
+    <title>Kayıt Ol - YEARLOG</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
-  <div class="page-bg"></div>
-  <div class="login-container">
-    <h2>Kayıt Ol</h2>
-    <form id="registerForm">
-      <label for="name">Ad</label>
-      <input type="text" id="name" required>
+    <div class="page-bg"></div>
+    <div class="login-container"> <h2>Kayıt Ol</h2>
+        <form id="registerForm">
+            <label for="name">Ad</label>
+            <input type="text" id="name" required>
 
-      <label for="surname">Soyad</label>
-      <input type="text" id="surname" required>
+            <label for="surname">Soyad</label>
+            <input type="text" id="surname" required>
 
-      <label for="email">E-posta</label>
-      <input type="email" id="email" required>
+            <label for="email">E-posta</label>
+            <input type="email" id="email" required>
 
-      <label for="password">Şifre</label>
-      <input type="password" id="password" required>
+            <label for="password">Şifre</label>
+            <input type="password" id="password" required>
 
-      <button type="submit">Kayıt Ol</button>
-      <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a></p>
-    </form>
-  </div>
+            <button type="submit">Kayıt Ol</button>
+            <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a></p>
+        </form>
+    </div>
 
- <script>
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const userData = {
-    name: document.getElementById('name').value.trim(),
-    surname: document.getElementById('surname').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    password: document.getElementById('password').value.trim()
-  };
+    <div id="toast" class="toast"></div>
 
-  try {
-    const response = await fetch('http://localhost:5000/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData)
-    });
+    <script>
+        // Backend API URL'i
+        const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com/api'; // BURAYI KENDİ CANLI BACKEND URL'İNİZLE DEĞİŞTİRİN
 
-    const result = await response.json();
+        // Toast elementi referansı
+        const toastElement = document.getElementById('toast');
 
-    if (!response.ok) {
-      throw new Error(result.message || 'Kayıt işlemi başarısız');
-    }
+        // Toast bildirim fonksiyonu (Diğer sayfalardaki ile aynı)
+        function showToast(message, type = 'success', duration = 3000) {
+            if (!toastElement) {
+                console.warn('Toast elementi bulunamadı. Lütfen HTML dosyasında <div id="toast" class="toast"></div> elementinin olduğundan emin olun.');
+                return;
+            }
 
-    alert('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
-    window.location.href = 'login.html';
+            toastElement.textContent = message;
+            toastElement.className = `toast ${type} show`; // 'show' sınıfı CSS geçişleri için
+            toastElement.style.display = 'block'; // Elementi görünür yapar
 
-  } catch (error) {
-    console.error('Hata:', error);
-    alert('Hata: ' + error.message);
-  }
-});
-</script>
+            setTimeout(() => {
+                toastElement.classList.remove('show'); // 'show' sınıfını kaldırarak gizleme geçişini başlat
+                toastElement.addEventListener('transitionend', function handler() {
+                    toastElement.style.display = 'none'; // Geçiş bitince elementi tamamen gizle
+                    toastElement.removeEventListener('transitionend', handler); // Dinleyiciyi kaldır
+                }, { once: true });
+            }, duration);
+        }
 
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userData = {
+                name: document.getElementById('name').value.trim(),
+                surname: document.getElementById('surname').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value.trim()
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, { // API_BASE_URL kullanıldı
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || result.error || 'Kayıt işlemi başarısız'); // result.error da hata mesajı içerebilir
+                }
+
+                showToast('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000); // 2 saniye sonra yönlendir
+
+            } catch (error) {
+                console.error('Hata:', error);
+                showToast(error.message || 'Sistemsel bir hata oluştu!', 'error'); // Hata tipi belirtildi
+            }
+        });
+    </script>
 </body>
 
 </html>
