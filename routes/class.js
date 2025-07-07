@@ -1,4 +1,5 @@
 // backend/routes/class.js YENİ HALİ
+// Bu yorum, Render'ın yeni bir dağıtım başlatmasını tetiklemek için eklendi.
 
 const express = require('express');
 const router = express.Router();
