@@ -1,7 +1,7 @@
 // backend/public/script.js/favorites.js - YENİ HALİ
 
 // Backend API URL'i
-const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com'; // BURAYI KENDİ CANLI BACKEND URL'İNİZLE DEĞİŞTİRİN
+const API_BASE_URL = 'https://havvanur-yil-backend.onrender.com/api'; // SONUNA '/api' EKLENDİ!
 
 const favoritesList = document.getElementById("favoritesList");
 const toast = document.getElementById("toast"); // HTML'de toast div'inin ID'si "toast" olmalı
