@@ -297,7 +297,7 @@ function copyLink() {
         showToast("PDF indirmek için bir sınıf seçmelisiniz.", "error");
         return;
     }
-    const fileUrl = `http://localhost:5000/downloads/yillik-${selectedClass}.pdf`; 
+    const fileUrl = `${API_BASE_URL.replace('/api', '')}/downloads/yillik-${selectedClass}.pdf`;
     navigator.clipboard.writeText(fileUrl).then(() => {
         showToast("Bağlantı panoya kopyalandı!", "success");
     }).catch(err => {
